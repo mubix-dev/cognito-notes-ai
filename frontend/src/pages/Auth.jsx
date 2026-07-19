@@ -35,7 +35,6 @@ const handleGoogleAuth = async () => {
       { name, email },
       { withCredentials: true },
     );
-    console.log(result.data.data);
   } catch (error) {
     console.log(error);
   }
@@ -79,7 +78,7 @@ function Auth() {
             type="button"
             initial={{ opacity: 0, x: -200 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
             whileHover={{
               scale: 1.04,
               transition: { type: "spring", stiffness: 400, damping: 17 },
@@ -88,7 +87,7 @@ function Auth() {
               scale: 0.96,
               transition: { type: "spring", stiffness: 400, damping: 17 },
             }}
-            className="flex w-full max-w-xs sm:w-auto justify-center items-center gap-3 rounded-full border border-slate-200 bg-violet-100 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-700 shadow-md transition-shadow duration-300 hover:shadow-lg hover:shadow-indigo-200/60 cursor-pointer"
+            className="flex w-full max-w-xs sm:w-auto justify-center items-center gap-3 rounded-full border border-slate-200 bg-violet-200/70 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-700 shadow-md transition-shadow duration-300 hover:shadow-lg hover:shadow-indigo-200/60 cursor-pointer"
           >
             <FcGoogle className="text-xl sm:text-2xl" />
             Continue with Google
