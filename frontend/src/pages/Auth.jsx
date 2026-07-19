@@ -13,6 +13,9 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../utils/firebase";
 import { serverURL } from "../main";
 import axios from "axios";
+import HowItWorks from "../components/HowItWorks";
+import FAQ from "../components/FAQ";
+import Footer from "../components/Footer";
 
 const FEATURES = [
   { label: "Exam Notes", Icon: FaGraduationCap },
@@ -30,7 +33,7 @@ const handleGoogleAuth = async () => {
     const name = User.displayName;
     const email = User.email;
 
-    const result = await axios.post(
+    await axios.post(
       `${serverURL}/api/auth/google`,
       { name, email },
       { withCredentials: true },
@@ -47,7 +50,7 @@ function Auth() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.5 }}
-        className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] mt-4 sm:mt-6 md:mt-8 flex flex-wrap items-center gap-x-4 gap-y-0.5 rounded-xl sm:rounded-full bg-violet-200/70 px-4 sm:px-6 md:px-8 py-2.5 shadow"
+        className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] mt-4 sm:mt-6 md:mt-8 flex flex-wrap items-center gap-x-4 gap-y-0.5 rounded-xl sm:rounded-2xl bg-violet-50 px-4 sm:px-6 md:px-8 py-2.5 shadow-lg border-2 border-violet-100"
       >
         <motion.img
           src={logo}
@@ -87,7 +90,7 @@ function Auth() {
               scale: 0.96,
               transition: { type: "spring", stiffness: 400, damping: 17 },
             }}
-            className="flex w-full max-w-xs sm:w-auto justify-center items-center gap-3 rounded-full border border-slate-200 bg-violet-200/70 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-700 shadow-md transition-shadow duration-300 hover:shadow-lg hover:shadow-indigo-200/60 cursor-pointer"
+            className="flex w-full max-w-xs sm:w-auto justify-center items-center gap-3 rounded-2xl border-2 border-violet-100 bg-violet-50 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-700 shadow-md transition-shadow duration-300 hover:shadow-lg hover:shadow-indigo-200/60 cursor-pointer"
           >
             <FcGoogle className="text-xl sm:text-2xl" />
             Continue with Google
@@ -128,7 +131,7 @@ function Auth() {
                 scale: 1.06,
                 transition: { type: "spring", stiffness: 300, damping: 15 },
               }}
-              className="flex flex-col items-center justify-center gap-3 rounded-2xl bg-linear-to-br from-violet-200 to-violet-300 p-5 sm:p-6 text-black/70 shadow-xl shadow-violet-300/50 transform-3d cursor-default"
+              className="flex flex-col items-center justify-center gap-3 rounded-2xl bg-linear-to-br from-violet-300 to-violet-600 p-5 sm:p-6 text-white shadow-xl shadow-violet-300/50 transform-3d cursor-default"
             >
               <span className="transform-[translateZ(24px)]">
                 <Icon className="text-2xl sm:text-3xl" />
@@ -140,6 +143,10 @@ function Auth() {
           ))}
         </div>
       </main>
+
+      <HowItWorks />
+      <FAQ />
+      <Footer />
     </div>
   );
 }
