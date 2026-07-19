@@ -1,8 +1,9 @@
-import React from 'react'
 import {Route, Routes} from "react-router-dom"
 import Home from './pages/Home'
 import Auth from './pages/Auth'
+import useCurrentUser from './hooks/useCurrentUser'
 function App() {
+  useCurrentUser()
   return (
     <>
       <Routes>
