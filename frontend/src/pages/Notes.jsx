@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
+import { useReactToPrint } from "react-to-print";
 import { serverURL } from "../main";
 import { setUserData } from "../redux/userSlice";
-import { FaFileLines } from "react-icons/fa6";
+import { FaFileLines, FaDownload } from "react-icons/fa6";
 import Navbar from "../components/Navbar";
 import TopicNotes from "../components/TopicNotes";
 import NotesView from "../components/NotesView";
@@ -40,6 +41,12 @@ function Notes() {
     setActiveSection(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const printRef = useRef(null);
+  const handleDownloadPdf = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: notes?.topic || "cognito-notes",
+  });
 
   const generateNotes = async (form) => {
     setError("");
@@ -109,7 +116,21 @@ function Notes() {
           )}
           <div className="min-w-0 flex-1">
           {notes ? (
-            <NotesView note={notes} />
+            <div>
+              <div className="mb-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleDownloadPdf}
+                  className="flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+                >
+                  <FaDownload className="text-violet-600" />
+                  Download PDF
+                </button>
+              </div>
+              <div ref={printRef}>
+                <NotesView note={notes} />
+              </div>
+            </div>
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-slate-300 px-6 py-12 text-center">
               <FaFileLines className="text-4xl text-slate-300" />
