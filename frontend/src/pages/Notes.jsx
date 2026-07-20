@@ -6,22 +6,48 @@ import { setUserData } from "../redux/userSlice";
 import { FaFileLines } from "react-icons/fa6";
 import Navbar from "../components/Navbar";
 import TopicNotes from "../components/TopicNotes";
+import NotesView from "../components/NotesView";
 
 function Notes() {
   const [notes, setNotes] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
+  const [activeSection, setActiveSection] = useState("");
   const { userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  const content = notes?.content;
+  const sections = notes
+    ? [
+        { id: "note-subtopics", label: "Important Topics" },
+        { id: "note-body", label: "Notes" },
+        content?.revisionPoints?.length > 0 && {
+          id: "note-revision",
+          label: "Quick Revision",
+        },
+        (content?.questions?.short?.length > 0 ||
+          content?.questions?.long?.length > 0) && {
+          id: "note-questions",
+          label: "Questions",
+        },
+        content?.diagram && { id: "note-diagram", label: "Diagram" },
+        content?.charts?.length > 0 && { id: "note-charts", label: "Charts" },
+      ].filter(Boolean)
+    : [];
+
+  const scrollToSection = (id) => {
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const generateNotes = async (form) => {
     setError("");
     setLoading(true);
     setProgress(5);
     const timer = setInterval(() => {
-      setProgress((p) => Math.min(p + Math.random() * 8, 95));
-    }, 400);
+      setProgress((p) => Math.min(p + Math.random() * 3, 95));
+    }, 600);
     try {
       const result = await axios.post(`${serverURL}/api/notes/generate`, form, {
         withCredentials: true,
@@ -59,11 +85,31 @@ function Notes() {
           </div>
         )}
 
-        <div className="mx-auto mt-8 w-full max-w-2xl">
+        <div className="mt-8 flex w-full items-start gap-6">
+          {notes && (
+            <aside className="sticky top-6 hidden w-48 shrink-0 rounded-2xl border border-slate-200 bg-white p-3 md:block">
+              <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                On this page
+              </p>
+              {sections.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => scrollToSection(id)}
+                  className={`w-full cursor-pointer rounded-lg px-2.5 py-1.5 text-left text-sm ${
+                    activeSection === id
+                      ? "bg-violet-100 font-medium text-violet-700"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </aside>
+          )}
+          <div className="min-w-0 flex-1">
           {notes ? (
-            <pre className="whitespace-pre-wrap rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-800">
-              {typeof notes === "string" ? notes : JSON.stringify(notes, null, 2)}
-            </pre>
+            <NotesView note={notes} />
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-slate-300 px-6 py-12 text-center">
               <FaFileLines className="text-4xl text-slate-300" />
@@ -75,6 +121,7 @@ function Notes() {
               </p>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
