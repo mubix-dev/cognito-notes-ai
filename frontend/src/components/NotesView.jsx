@@ -61,7 +61,7 @@ function MermaidDiagram({ chart }) {
 
 function NoteChart({ chart }) {
   return (
-    <div className="rounded-2xl border border-slate-200 p-4">
+    <div className="break-inside-avoid rounded-2xl border border-slate-200 p-4">
       <p className="mb-3 text-sm font-semibold text-slate-700">{chart.title}</p>
       <ResponsiveContainer width="100%" height={240}>
         {chart.type === "pie" ? (
@@ -161,7 +161,7 @@ function NotesView({ note }) {
 
       {/* revision points */}
       {content.revisionPoints?.length > 0 && (
-        <div id="note-revision" className="rounded-2xl bg-violet-50 p-4">
+        <div id="note-revision" className="break-inside-avoid rounded-2xl bg-violet-50 p-4">
           <h3 className="text-sm font-bold text-violet-900">Quick Revision</h3>
           <ul className="mt-2 list-disc pl-5 text-sm text-slate-700">
             {content.revisionPoints.map((point) => (
@@ -178,7 +178,7 @@ function NotesView({ note }) {
         content.questions?.long?.length > 0) && (
         <div id="note-questions" className="grid gap-4 sm:grid-cols-2">
           {content.questions.short?.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="break-inside-avoid rounded-2xl border border-slate-200 p-4">
               <h3 className="text-sm font-bold text-slate-800">
                 Short Questions
               </h3>
@@ -192,7 +192,7 @@ function NotesView({ note }) {
             </div>
           )}
           {content.questions.long?.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="break-inside-avoid rounded-2xl border border-slate-200 p-4">
               <h3 className="text-sm font-bold text-slate-800">
                 Long Questions
               </h3>
@@ -210,7 +210,7 @@ function NotesView({ note }) {
 
       {/* diagram */}
       {content.diagram && (
-        <div id="note-diagram" className="rounded-2xl border border-slate-200 p-4">
+        <div id="note-diagram" className="break-inside-avoid rounded-2xl border border-slate-200 p-4">
           <h3 className="mb-3 text-sm font-bold text-slate-800">Diagram</h3>
           <MermaidDiagram chart={content.diagram} />
         </div>
