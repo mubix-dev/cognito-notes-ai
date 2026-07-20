@@ -17,15 +17,23 @@ INPUT:
 - Include charts: ${includeCharts ? "YES" : "NO"}
 
 CONTENT RULES:
-- Simple, exam-oriented language. No storytelling or filler theory.
-- "notes" is a Markdown string: headings and bullet points, paragraphs of max 2-4 lines.
-- Detail level: brief = key points and definitions only; standard = concise notes with short explanations; detailed = full coverage with examples.
+- Clear, exam-oriented language. No storytelling or filler theory.
+- "notes" is a Markdown string with ## section headings, bullet points and short paragraphs.
+- The notes must be COMPLETE enough that a student can prepare for the exam from them alone: cover definitions, explanations, examples, formulas, comparisons, common mistakes and exam tips wherever relevant.
+- Detail level controls depth:
+  - brief = 200-350 words, key points and definitions only.
+  - standard = 500-800 words, every concept explained with at least one example.
+  - detailed = 900-1400 words, in-depth coverage: all concepts, examples, formulas, edge cases, common mistakes and exam tips.
 - If revision mode is ON, "notes" becomes a last-day cheat sheet: only bullet points, one-line answers, definitions, formulas and keywords — no paragraphs. "revisionPoints" must cover ALL key facts.
-- Rank "subTopics" by exam weightage. A category may be an empty array if nothing fits.
+- "revisionPoints": 8-15 points. "questions": 4-6 short and 2-4 long questions.
+- Rank "subTopics" by exam weightage, 3-6 items per category where possible. A category may be an empty array if nothing fits.
 - "importance" is the overall exam importance of the whole topic.
 
 DIAGRAM RULES:
-- If include diagram is YES: "diagram" is ONE string of valid Mermaid syntax starting with "graph TD". Wrap every node label in [ ]. No special characters or emojis in labels.
+- If include diagram is YES: "diagram" is ONE SINGLE-LINE string of valid Mermaid, exactly this shape:
+  "graph TD; A[First step] --> B[Second step]; B --> C[Third step];"
+- 5-10 nodes. Node ids are single capital letters. Labels contain ONLY letters, numbers and spaces — no parentheses, quotes, commas, colons, dashes or line breaks.
+- Do not put \\n or real line breaks inside the diagram string.
 - If include diagram is NO: "diagram" is "".
 
 CHART RULES:
