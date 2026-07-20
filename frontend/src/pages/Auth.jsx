@@ -16,6 +16,8 @@ import axios from "axios";
 import HowItWorks from "../components/HowItWorks";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const FEATURES = [
   { label: "Exam Notes", Icon: FaGraduationCap },
@@ -26,24 +28,27 @@ const FEATURES = [
   { label: "And More", Icon: FaWandMagicSparkles },
 ];
 
-const handleGoogleAuth = async () => {
-  try {
-    const response = await signInWithPopup(auth, provider);
-    const User = response.user;
-    const name = User.displayName;
-    const email = User.email;
-
-    await axios.post(
-      `${serverURL}/api/auth/google`,
-      { name, email },
-      { withCredentials: true },
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 function Auth() {
+  const dispatch = useDispatch();
+
+  const handleGoogleAuth = async () => {
+    try {
+      const response = await signInWithPopup(auth, provider);
+      const User = response.user;
+      const name = User.displayName;
+      const email = User.email;
+
+      const result = await axios.post(
+        `${serverURL}/api/auth/google`,
+        { name, email },
+        { withCredentials: true },
+      );
+      dispatch(setUserData(result.data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="min-h-screen overflow-hidden bg-white ">
       <motion.header
@@ -90,7 +95,7 @@ function Auth() {
               scale: 0.96,
               transition: { type: "spring", stiffness: 400, damping: 17 },
             }}
-            className="flex w-full max-w-xs sm:w-auto justify-center items-center gap-3 rounded-2xl border-2 border-violet-100 bg-violet-50 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-700 shadow-md transition-shadow duration-300 hover:shadow-lg hover:shadow-indigo-200/60 cursor-pointer"
+            className="flex w-full max-w-xs sm:w-auto justify-center items-center gap-3 rounded-full border-2 border-violet-100 bg-violet-50 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-700 shadow-md transition-shadow duration-300 hover:shadow-lg hover:shadow-indigo-200/60 cursor-pointer"
           >
             <FcGoogle className="text-xl sm:text-2xl" />
             Continue with Google
