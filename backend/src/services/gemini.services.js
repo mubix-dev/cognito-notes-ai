@@ -3,11 +3,11 @@ import ApiError from "../utils/api-error.js";
 const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
-export const generateGeminiResponse = async (prompt) => {
-  let response;
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+export const generateGeminiResponse = async (prompt) => {
   for (let attempt = 1; attempt <= 3; attempt++) {
-    response = await fetch(GEMINI_URL, {
+    const response = await fetch(GEMINI_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,39 +17,43 @@ export const generateGeminiResponse = async (prompt) => {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           responseMimeType: "application/json",
+          maxOutputTokens: 16384,
         },
       }),
     });
 
-    if (response.ok) break;
-
-    const err = await response.text();
-    console.error(`Gemini attempt ${attempt} failed:`, response.status, err.slice(0, 200));
-
-    const retryable = [429, 500, 502, 503].includes(response.status);
-    if (!retryable || attempt === 3) {
-      throw new ApiError(502, "Failed to generate notes, please try again");
+    if (!response.ok) {
+      const err = await response.text();
+      console.error(`Gemini attempt ${attempt} failed:`, response.status, err.slice(0, 200));
+      const retryable = [429, 500, 502, 503].includes(response.status);
+      if (!retryable || attempt === 3) {
+        throw new ApiError(502, "Failed to generate notes, please try again");
+      }
+      await wait(attempt * 2000);
+      continue;
     }
-    await new Promise((r) => setTimeout(r, attempt * 2000));
-  }
 
-  const data = await response.json();
+    const data = await response.json();
+    const candidate = data.candidates?.[0];
+    const text = candidate?.content?.parts?.[0]?.text;
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) {
+      const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+      try {
+        return JSON.parse(cleanText);
+      } catch {
+        console.error(
+          `Gemini attempt ${attempt} invalid JSON (finishReason: ${candidate?.finishReason}), tail:`,
+          cleanText.slice(-200),
+        );
+      }
+    } else {
+      console.error(`Gemini attempt ${attempt}: no text (finishReason: ${candidate?.finishReason})`);
+    }
 
-  if (!text) {
-    throw new ApiError(502, "No text returned from Gemini");
-  }
-
-  const cleanText = text
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
-
-  try {
-    return JSON.parse(cleanText);
-  } catch {
-    console.error("Gemini returned invalid JSON:", cleanText.slice(0, 300));
-    throw new ApiError(502, "Gemini returned invalid JSON, please try again");
+    if (attempt === 3) {
+      throw new ApiError(502, "Gemini returned an invalid response, please try again");
+    }
+    await wait(attempt * 2000);
   }
 };
