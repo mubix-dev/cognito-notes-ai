@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Two students watching AI turn messy papers into clean notes, charts and documents">
+  <defs>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- soft neutral background blobs -->
+  <ellipse cx="240" cy="190" rx="215" ry="150" fill="#f1f5f9"/>
+  <ellipse cx="150" cy="140" rx="90" ry="70" fill="#fef3c7" opacity="0.6"/>
+  <ellipse cx="340" cy="230" rx="100" ry="75" fill="#ccfbf1" opacity="0.6"/>
+
+  <!-- orbit ring with colorful dots -->
+  <ellipse cx="240" cy="185" rx="158" ry="64" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 8" opacity="0.9"/>
+  <circle cx="88" cy="210" r="6" fill="#f59e0b"/>
+  <circle cx="396" cy="163" r="6" fill="#14b8a6"/>
+  <circle cx="240" cy="121" r="5" fill="#fb7185"/>
+
+  <!-- messy papers (left) -->
+  <g transform="rotate(-10 84 178)">
+    <rect x="56" y="150" width="56" height="72" rx="6" fill="#fff" stroke="#fbbf24" stroke-width="2"/>
+    <path d="M66 166 q10 6 18 -2 q10 8 16 0 M66 182 q8 -6 20 2 q8 -6 14 2 M66 198 q12 6 18 -2" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" fill="none"/>
+  </g>
+  <g transform="rotate(8 120 205)">
+    <rect x="94" y="172" width="54" height="68" rx="6" fill="#fff" stroke="#fca5a5" stroke-width="2"/>
+    <path d="M104 188 q8 8 16 0 q8 6 16 -2 M104 204 q12 -6 18 2 q6 -4 14 2 M104 220 q8 6 16 -2" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- flow arrow: papers -> laptop -->
+  <path d="M140 200 C160 196 164 190 176 184" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5 6" stroke-linecap="round" fill="none"/>
+  <path d="M176 184 l-8 0 M176 184 l-3 7" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+  <!-- laptop (center) -->
+  <rect x="178" y="118" width="130" height="106" rx="9" fill="#1e293b"/>
+  <rect x="186" y="126" width="114" height="90" rx="5" fill="url(#screen)"/>
+  <!-- brain-note glyph on screen (brand mark) -->
+  <path d="M228 148 H252 L262 158 V186 Q262 190 258 190 H229 A9 9 0 0 1 215 182 A9 9 0 0 1 211.5 167 A9 9 0 0 1 215 152 A8 8 0 0 1 228 148 Z" fill="#fff"/>
+  <path d="M252 148 V158 H262 Z" fill="#bae6fd"/>
+  <path d="M234 168 H254 M234 177 H248" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <path d="M224 158 c-3.5 2 -4.5 6 -2.5 9.5 M224.5 172 c0.5 3.5 3 5.5 6.5 5.5" stroke="#6366f1" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- animated loading bar on screen -->
+  <rect x="206" y="200" width="74" height="7" rx="3.5" fill="#0ea5e9" opacity="0.4"/>
+  <rect x="206" y="200" width="48" height="7" rx="3.5" fill="#fff">
+    <animate attributeName="width" values="10;70;10" dur="3s" repeatCount="indefinite"/>
+  </rect>
+  <!-- laptop base -->
+  <rect x="158" y="224" width="170" height="12" rx="6" fill="#334155"/>
+
+  <!-- big sparkle above laptop (pulsing) -->
+  <path d="M243 84 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5 z" fill="#f59e0b">
+    <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M275 100 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5 -7 -7 -2.5 7 -2.5 z" fill="#fbbf24">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- flow arrow: laptop -> outputs -->
+  <path d="M310 176 C330 172 334 166 344 160" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5 6" stroke-linecap="round" fill="none"/>
+  <path d="M344 160 l-8 1 M344 160 l-4 7" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+  <!-- output: clean note card (bobbing) -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0 0; 0 -6; 0 0" dur="3.5s" repeatCount="indefinite"/>
+    <rect x="336" y="96" width="78" height="58" rx="9" fill="#fff" stroke="#38bdf8" stroke-width="2.5"/>
+    <path d="M348 112 H402 M348 124 H394 M348 136 H386" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- output: chart card (bobbing, offset) -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0 0; 0 -6; 0 0" dur="3.5s" begin="0.8s" repeatCount="indefinite"/>
+    <rect x="356" y="168" width="76" height="62" rx="9" fill="#fff" stroke="#2dd4bf" stroke-width="2.5"/>
+    <rect x="368" y="200" width="11" height="18" rx="2" fill="#fbbf24"/>
+    <rect x="385" y="188" width="11" height="30" rx="2" fill="#2dd4bf"/>
+    <rect x="402" y="180" width="11" height="38" rx="2" fill="#818cf8"/>
+  </g>
+
+  <!-- output: document with download arrow -->
+  <rect x="330" y="244" width="58" height="50" rx="8" fill="#fff" stroke="#fb7185" stroke-width="2.5"/>
+  <path d="M359 254 v18 M352 266 l7 7 7 -7" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M346 284 h26" stroke="#fda4af" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- ground shadow -->
+  <ellipse cx="240" cy="310" rx="150" ry="14" fill="#e2e8f0" opacity="0.8"/>
+
+  <!-- two students watching the screen (back view) -->
+  <g>
+    <circle cx="205" cy="248" r="20" fill="#78350f"/>
+    <path d="M191 238 a20 20 0 0 1 22 -5" stroke="#92400e" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M175 312 v-20 a30 30 0 0 1 30 -30 a30 30 0 0 1 30 30 v20 z" fill="#14b8a6"/>
+  </g>
+  <g>
+    <circle cx="277" cy="224" r="8" fill="#1e293b"/>
+    <circle cx="277" cy="246" r="20" fill="#334155"/>
+    <path d="M263 236 a20 20 0 0 1 22 -5" stroke="#475569" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M247 312 v-18 a30 30 0 0 1 30 -30 a30 30 0 0 1 30 30 v18 z" fill="#fb7185"/>
+  </g>
+</svg>
