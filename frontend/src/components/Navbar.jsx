@@ -8,7 +8,7 @@ import { setUserData } from "../redux/userSlice";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar({isMyNotes = false}) {
   const [showBuyCredits, setShowBuyCredits] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const { userData } = useSelector((state) => state.user);
@@ -123,13 +123,19 @@ function Navbar() {
               transition={{ duration: 0.2 }}
               className="absolute right-0 z-10 mt-2 w-40 rounded-xl border border-violet-200 bg-white p-2 shadow-lg"
             >
-              <button
+              {!isMyNotes ? <button
                 onClick={()=>navigate("/history")}
                 type="button"
                 className="w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-violet-50"
               >
-                History
-              </button>
+                My Notes
+              </button>:<button
+                onClick={()=>navigate("/notes")}
+                type="button"
+                className="w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-violet-50"
+              >
+                Create Notes
+              </button>}
               <button
                 type="button"
                 onClick={handleLogout}
