@@ -4,7 +4,14 @@ import generateToken from "../libs/token.js";
 import ApiResponse from "../utils/api-response.js";
 import ApiError from "../utils/api-error.js";
 
-// TODO: verify Firebase ID token with firebase-admin instead of trusting req.body
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+};
+
+
 const googleAuth = asyncHandler(async (req, res) => {
   const { name, email } = req.body;
 
@@ -20,9 +27,7 @@ const googleAuth = asyncHandler(async (req, res) => {
   const token = generateToken(user._id);
 
   res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -31,7 +36,7 @@ const googleAuth = asyncHandler(async (req, res) => {
 
 
 const logout = asyncHandler(async(req,res)=>{
-    res.clearCookie("token")
+    res.clearCookie("token", cookieOptions)
     return res.status(200).json(new ApiResponse(200, null, "Logout successfully!"))
 })
 
