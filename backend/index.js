@@ -6,10 +6,18 @@ import connectDB from "./src/db/db.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import userRoutes from "./src/routes/user.routes.js";
 import notesRoutes from "./src/routes/notes.routes.js";
+import paymentRoutes from "./src/routes/payment.routes.js";
+import { stripeWebhook } from "./src/controllers/payment.controller.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+
+app.post(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook,
+);
 
 app.use(express.json());
 app.use(
@@ -27,6 +35,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/notes", notesRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
