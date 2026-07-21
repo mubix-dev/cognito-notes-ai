@@ -7,8 +7,14 @@ import { buildPrompt } from "../utils/promptBuilder.js";
 import { generateGeminiResponse } from "../services/gemini.services.js";
 
 const generateNotes = asyncHandler(async (req, res) => {
-  const { topic, subject, detail, revisionMode, includeDiagrams, includeCharts } =
-    req.body;
+  const {
+    topic,
+    subject,
+    detail,
+    revisionMode,
+    includeDiagrams,
+    includeCharts,
+  } = req.body;
 
   if (!topic?.trim()) {
     throw new ApiError(400, "Topic is required");
@@ -19,7 +25,10 @@ const generateNotes = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Unauthorized: user not found");
   }
   if (user.credits < 1) {
-    throw new ApiError(403, "You are out of credits. Please buy more to continue.");
+    throw new ApiError(
+      403,
+      "You are out of credits. Please buy more to continue.",
+    );
   }
 
   const prompt = buildPrompt({
@@ -53,4 +62,12 @@ const generateNotes = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { note, credits: user.credits }));
 });
 
-export { generateNotes };
+const getMyNotes = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+
+  const notes = await Notes.find({ user: userId }).sort({ createdAt: -1 });
+
+  return res.status(200).json(new ApiResponse(200, {notes}));
+});
+
+export { generateNotes, getMyNotes };
