@@ -7,6 +7,7 @@ import { useSelector } from "react-redux"
 import Pricing from "./pages/Pricing"
 import History from "./pages/History"
 import About from "./pages/About"
+import LoadingScreen from "./components/LoadingScreen"
 import Contact from "./pages/Contact"
 import Terms from "./pages/Terms"
 function App() {
@@ -14,7 +15,7 @@ function App() {
 
   const {userData, loading} = useSelector((state)=>state.user)
 
-  if (loading) return null
+  if (loading) return <LoadingScreen />
 
   return (
     <>
