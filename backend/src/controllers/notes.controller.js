@@ -70,4 +70,19 @@ const getMyNotes = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, {notes}));
 });
 
-export { generateNotes, getMyNotes };
+const deleteNote = asyncHandler(async (req, res) => {
+  const note = await Notes.findOneAndDelete({
+    _id: req.params.id,
+    user: req.userId,
+  });
+
+  if (!note) {
+    throw new ApiError(404, "Note not found");
+  }
+
+  await User.findByIdAndUpdate(req.userId, { $pull: { notes: note._id } });
+
+  return res.status(200).json(new ApiResponse(200, null, "Note deleted"));
+});
+
+export { generateNotes, getMyNotes, deleteNote };
