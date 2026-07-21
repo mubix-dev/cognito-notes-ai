@@ -52,7 +52,7 @@ const generateNotes = asyncHandler(async (req, res) => {
     content,
   });
 
-  user.credits -= 1;
+  user.credits -= 5;
   user.isCreditAvailable = user.credits > 0;
   user.notes.push(note._id);
   await user.save();
