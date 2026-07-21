@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 import { useReactToPrint } from "react-to-print";
 import { serverURL } from "../main";
 import {
@@ -9,6 +10,7 @@ import {
   FaDiagramProject,
   FaChartColumn,
   FaDownload,
+  FaTrash,
 } from "react-icons/fa6";
 import Navbar from "../components/Navbar";
 import NotesView from "../components/NotesView";
@@ -24,6 +26,22 @@ function History() {
     contentRef: printRef,
     documentTitle: selected?.topic || "cognito-notes",
   });
+
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`${serverURL}/api/notes/${deleteTarget._id}`, {
+        withCredentials: true,
+      });
+      setNotes(notes.filter((n) => n._id !== deleteTarget._id));
+      if (selected?._id === deleteTarget._id) setSelected(null);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
 
   useEffect(() => {
     const myNotes = async () => {
@@ -77,40 +95,51 @@ function History() {
             </p>
           )}
           {notes.map((note) => (
-            <button
+            <div
               key={note._id}
-              type="button"
               onClick={() => {
                 setSelected(note);
                 setShowSidebar(false);
               }}
-              className={`mb-1.5 w-full cursor-pointer rounded-lg px-2.5 py-2 text-left ${
+              className={`mb-1.5 flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left ${
                 selected?._id === note._id
                   ? "bg-violet-100"
                   : "bg-slate-50 hover:bg-violet-50"
               }`}
             >
-              <p
-                className={`truncate text-sm font-medium ${
-                  selected?._id === note._id
-                    ? "text-violet-700"
-                    : "text-slate-700"
-                }`}
-              >
-                {note.topic}
-              </p>
-              <div className="mt-0.5 flex items-center gap-2">
-                <p className="text-xs text-slate-400">
-                  {new Date(note.createdAt).toLocaleDateString()}
+              <div className="min-w-0">
+                <p
+                  className={`truncate text-sm font-medium ${
+                    selected?._id === note._id
+                      ? "text-violet-700"
+                      : "text-slate-700"
+                  }`}
+                >
+                  {note.topic}
                 </p>
-                {note.includeDiagrams && (
-                  <FaDiagramProject className="text-xs text-teal-500" />
-                )}
-                {note.includeCharts && (
-                  <FaChartColumn className="text-xs text-amber-500" />
-                )}
+                <div className="mt-0.5 flex items-center gap-2">
+                  <p className="text-xs text-slate-400">
+                    {new Date(note.createdAt).toLocaleDateString()}
+                  </p>
+                  {note.includeDiagrams && (
+                    <FaDiagramProject className="text-xs text-teal-500" />
+                  )}
+                  {note.includeCharts && (
+                    <FaChartColumn className="text-xs text-amber-500" />
+                  )}
+                </div>
               </div>
-            </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeleteTarget(note);
+                }}
+                className="shrink-0 cursor-pointer rounded-md p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+              >
+                <FaTrash className="text-xs" />
+              </button>
+            </div>
           ))}
         </aside>
         </div>
@@ -143,6 +172,54 @@ function History() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {deleteTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDeleteTarget(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl"
+            >
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+                <FaTrash className="text-red-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-bold text-slate-900">
+                Delete this note?
+              </h3>
+              <p className="mt-1 text-sm text-slate-500">
+                “{deleteTarget.topic}” will be permanently deleted. This cannot
+                be undone.
+              </p>
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(null)}
+                  className="flex-1 cursor-pointer rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDelete}
+                  className="flex-1 cursor-pointer rounded-full bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
