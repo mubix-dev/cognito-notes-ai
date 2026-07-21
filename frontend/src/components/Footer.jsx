@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.svg";
 
 function Footer() {
@@ -16,15 +17,15 @@ function Footer() {
           © 2026 Cognito Notes. All rights reserved.
         </p>
         <div className="flex gap-4 text-xs text-slate-500">
-          <a href="#" className="hover:text-violet-600">
+          <Link to="/about" className="hover:text-violet-600">
             About
-          </a>
-          <a href="#" className="hover:text-violet-600">
+          </Link>
+          <Link to="/contact" className="hover:text-violet-600">
             Contact
-          </a>
-          <a href="#" className="hover:text-violet-600">
+          </Link>
+          <Link to="/terms" className="hover:text-violet-600">
             Terms
-          </a>
+          </Link>
         </div>
       </div>
     </motion.footer>
