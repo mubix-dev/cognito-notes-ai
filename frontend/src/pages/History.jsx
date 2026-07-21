@@ -1,9 +1,150 @@
-import React from 'react'
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { useReactToPrint } from "react-to-print";
+import { serverURL } from "../main";
+import {
+  FaFileLines,
+  FaBars,
+  FaXmark,
+  FaDiagramProject,
+  FaChartColumn,
+  FaDownload,
+} from "react-icons/fa6";
+import Navbar from "../components/Navbar";
+import NotesView from "../components/NotesView";
 
 function History() {
+  const [notes, setNotes] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  const printRef = useRef(null);
+  const handleDownloadPdf = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: selected?.topic || "cognito-notes",
+  });
+
+  useEffect(() => {
+    const myNotes = async () => {
+      try {
+        const result = await axios.get(`${serverURL}/api/notes/my-notes`, {
+          withCredentials: true,
+        });
+        setNotes(result.data.data.notes);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    myNotes();
+  }, []);
+
   return (
-    <div>History</div>
-  )
+    <div className="min-h-screen bg-white">
+      <Navbar isMyNotes={true} />
+      <div className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] mt-8 flex flex-col gap-4 px-4 pb-16 md:flex-row md:items-start md:gap-6">
+        <button
+          type="button"
+          onClick={() => setShowSidebar(!showSidebar)}
+          className="flex w-fit cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm md:hidden"
+        >
+          {showSidebar ? <FaXmark /> : <FaBars />}
+          My Notes ({notes.length})
+        </button>
+
+        <div
+          className={`grid shrink-0 transition-[grid-template-rows] duration-300 ease-in-out md:sticky md:top-6 md:block md:w-64 ${
+            showSidebar ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+        <div className="overflow-hidden md:overflow-visible">
+        <aside
+          className={`w-full rounded-2xl border border-slate-200 bg-white p-3 transition-opacity duration-300 md:max-h-[80vh] md:overflow-y-auto md:opacity-100 ${
+            showSidebar ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+            My Notes ({notes.length})
+          </p>
+          {loading && (
+            <p className="px-2 py-2 text-sm text-slate-500">Loading…</p>
+          )}
+          {!loading && notes.length === 0 && (
+            <p className="px-2 py-2 text-sm text-slate-500">
+              No notes generated yet.
+            </p>
+          )}
+          {notes.map((note) => (
+            <button
+              key={note._id}
+              type="button"
+              onClick={() => {
+                setSelected(note);
+                setShowSidebar(false);
+              }}
+              className={`mb-1.5 w-full cursor-pointer rounded-lg px-2.5 py-2 text-left ${
+                selected?._id === note._id
+                  ? "bg-violet-100"
+                  : "bg-slate-50 hover:bg-violet-50"
+              }`}
+            >
+              <p
+                className={`truncate text-sm font-medium ${
+                  selected?._id === note._id
+                    ? "text-violet-700"
+                    : "text-slate-700"
+                }`}
+              >
+                {note.topic}
+              </p>
+              <div className="mt-0.5 flex items-center gap-2">
+                <p className="text-xs text-slate-400">
+                  {new Date(note.createdAt).toLocaleDateString()}
+                </p>
+                {note.includeDiagrams && (
+                  <FaDiagramProject className="text-xs text-teal-500" />
+                )}
+                {note.includeCharts && (
+                  <FaChartColumn className="text-xs text-amber-500" />
+                )}
+              </div>
+            </button>
+          ))}
+        </aside>
+        </div>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          {selected ? (
+            <div>
+              <div className="mb-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleDownloadPdf}
+                  className="flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+                >
+                  <FaDownload className="text-violet-600" />
+                  Download PDF
+                </button>
+              </div>
+              <div ref={printRef}>
+                <NotesView note={selected} />
+              </div>
+            </div>
+          ) : (
+            <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-slate-300 px-6 text-center">
+              <FaFileLines className="text-6xl text-slate-300" />
+              <p className="text-lg sm:text-xl font-semibold text-slate-500">
+                Select a note from the list to view it
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default History
+export default History;
