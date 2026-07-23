@@ -81,9 +81,10 @@ function Pricing() {
     } catch (error) {
       console.log(error);
       setMessage(
-        error.response?.status === 404
-          ? "Payments are coming soon!"
-          : "Could not start checkout. Please try again.",
+        error.response?.data?.message ||
+          (error.response?.status === 404
+            ? "Payments are coming soon!"
+            : "Could not start checkout. Please try again."),
       );
       setLoadingPlan("");
     }

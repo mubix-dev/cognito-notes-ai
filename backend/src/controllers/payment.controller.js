@@ -16,12 +16,25 @@ const PLANS = {
   pro: { amount: 299, credits: 300 },
 };
 
+const MAX_CREDITS = 500;
+
 const checkout = asyncHandler(async (req, res) => {
   const { planId } = req.body;
   const plan = PLANS[planId];
 
   if (!plan) {
     throw new ApiError(400, "Invalid plan");
+  }
+
+  const user = await User.findById(req.userId);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized: user not found");
+  }
+  if (user.credits + plan.credits >= MAX_CREDITS) {
+    throw new ApiError(
+      400,
+      `Credit limit reached — you already have ${user.credits} credits and cannot hold more than ${MAX_CREDITS}. Use some credits before buying more.`,
+    );
   }
 
   const session = await getStripe().checkout.sessions.create({
