@@ -28,7 +28,6 @@ Cognito Notes is an AI study partner for students. Sign in with Google, get **50
 
 ![AI-generated Mermaid diagram and Recharts charts](screenshots/diagram-charts.png)
 
-🎬 **Full demo video:** [`screenshots/demo.webm`](screenshots/demo.webm) — landing page → form → live progress → generated note tour.
 
 ---
 
