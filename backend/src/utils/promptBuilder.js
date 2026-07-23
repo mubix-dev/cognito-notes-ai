@@ -60,3 +60,36 @@ OUTPUT FORMAT (exact keys and value types):
   ]
 }`;
 };
+
+export const buildQuizPrompt = ({ topic, notes, subTopics }) => {
+  return `You are an exam quiz generator. Return ONLY one valid JSON object matching the OUTPUT FORMAT exactly — no markdown fences, no text before or after it.
+
+Create a multiple-choice quiz from these study notes.
+
+TOPIC: ${topic}
+
+SUB TOPICS: ${JSON.stringify(subTopics || {})}
+
+NOTES:
+${notes}
+
+QUIZ RULES:
+- Exactly 10 questions covering the whole note, hardest concepts included.
+- Every question has exactly 4 options with exactly ONE correct answer.
+- Wrong options must be plausible (common mistakes, close values) — never obviously silly.
+- "answerIndex" is the 0-based index of the correct option.
+- "explanation" is 1-2 lines explaining why the correct answer is right.
+- Questions must be answerable from the notes alone. No "all of the above".
+
+OUTPUT FORMAT (exact keys and value types):
+{
+  "questions": [
+    {
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "answerIndex": 0,
+      "explanation": "string"
+    }
+  ]
+}`;
+};
