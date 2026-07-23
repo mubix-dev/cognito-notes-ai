@@ -11,9 +11,9 @@ const getStripe = () => {
 };
 
 const PLANS = {
-  starter: { amount: 99, credits: 100 },
-  student: { amount: 199, credits: 300 },
-  pro: { amount: 299, credits: 800 },
+  starter: { amount: 99, credits: 60 },
+  student: { amount: 199, credits: 150 },
+  pro: { amount: 299, credits: 300 },
 };
 
 const checkout = asyncHandler(async (req, res) => {
