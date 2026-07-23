@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
 
 function Footer() {
+  const navigate = useNavigate()
   return (
     <motion.footer
       initial={{ opacity: 0, y: 60 }}
@@ -12,7 +13,7 @@ function Footer() {
       className="mt-16 border-t border-violet-200 bg-violet-50"
     >
       <div className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-6">
-        <img src={logo} alt="Cognito Notes" className="h-7 w-auto" />
+        <img onClick={()=>navigate("/")} src={logo} alt="Cognito Notes" className="h-7 w-auto cursor-pointer" />
         <p className="text-xs text-slate-500">
           © 2026 Cognito Notes. All rights reserved.
         </p>
