@@ -3,7 +3,7 @@ import ApiError from "../utils/api-error.js";
 import ApiResponse from "../utils/api-response.js";
 import User from "../models/user.model.js";
 import Notes from "../models/notes.model.js";
-import { buildPrompt } from "../utils/promptBuilder.js";
+import { buildPrompt, buildQuizPrompt } from "../utils/promptBuilder.js";
 // import { generateGeminiResponse } from "../services/gemini.services.js";
 import { generateGeminiResponse } from "../services/gemini.langchain.js";
 
@@ -87,4 +87,49 @@ const deleteNote = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, null, "Note deleted"));
 });
 
-export { generateNotes, getMyNotes, deleteNote };
+const generateQuiz = asyncHandler(async (req, res) => {
+  const note = await Notes.findOne({ _id: req.params.id, user: req.userId });
+  if (!note) {
+    throw new ApiError(404, "Note not found");
+  }
+
+  const user = await User.findById(req.userId);
+  if (!user) {
+    throw new ApiError(401, "Unauthorized: user not found");
+  }
+
+  if (note.quiz) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { quiz: note.quiz, credits: user.credits, cached: true }));
+  }
+
+  if (user.credits < 1) {
+    throw new ApiError(403, "You are out of credits. Please buy more to continue.");
+  }
+
+  const prompt = buildQuizPrompt({
+    topic: note.topic,
+    notes: note.content?.notes || "",
+    subTopics: note.content?.subTopics,
+  });
+  const result = await generateGeminiResponse(prompt);
+
+  if (!result?.questions?.length) {
+    throw new ApiError(502, "Could not generate a quiz, please try again");
+  }
+
+  note.quiz = result;
+  note.markModified("quiz");
+  await note.save();
+
+  user.credits -= 1;
+  user.isCreditAvailable = user.credits > 0;
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { quiz: result, credits: user.credits }));
+});
+
+export { generateNotes, getMyNotes, deleteNote, generateQuiz };
