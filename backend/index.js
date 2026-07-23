@@ -8,7 +8,10 @@ import userRoutes from "./src/routes/user.routes.js";
 import notesRoutes from "./src/routes/notes.routes.js";
 import paymentRoutes from "./src/routes/payment.routes.js";
 import { stripeWebhook } from "./src/controllers/payment.controller.js";
+import { startEmailWorker } from "./src/queues/email.queue.js";
 dotenv.config();
+
+startEmailWorker();
 
 const PORT = process.env.PORT || 5000;
 const app = express();

@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import generateToken from "../libs/token.js";
 import ApiResponse from "../utils/api-response.js";
 import ApiError from "../utils/api-error.js";
+import { queueWelcomeEmail } from "../queues/email.queue.js";
 
 
 const cookieOptions = {
@@ -22,6 +23,7 @@ const googleAuth = asyncHandler(async (req, res) => {
   let user = await User.findOne({email})
   if(!user){
     user = await User.create({name,email})
+    queueWelcomeEmail(user)
   }
 
   const token = generateToken(user._id);
