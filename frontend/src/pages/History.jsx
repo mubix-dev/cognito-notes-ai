@@ -10,9 +10,13 @@ import {
   FaChartColumn,
   FaDownload,
   FaTrash,
+  FaCircleQuestion,
 } from "react-icons/fa6";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 import Navbar from "../components/Navbar";
 import NotesView from "../components/NotesView";
+import QuizModal from "../components/QuizModal";
 
 function History() {
   const [notes, setNotes] = useState([]);
@@ -28,6 +32,30 @@ function History() {
   };
 
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [quiz, setQuiz] = useState(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const { userData } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const handleTakeQuiz = async () => {
+    setQuizLoading(true);
+    try {
+      const result = await axios.post(
+        `${serverURL}/api/notes/${selected._id}/quiz`,
+        {},
+        { withCredentials: true },
+      );
+      setQuiz(result.data.data.quiz);
+      if (!result.data.data.cached) {
+        dispatch(setUserData({ ...userData, credits: result.data.data.credits }));
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data?.message || "Could not generate quiz, try again.");
+    } finally {
+      setQuizLoading(false);
+    }
+  };
 
   const confirmDelete = async () => {
     try {
@@ -148,7 +176,20 @@ function History() {
         <div className="min-w-0 flex-1">
           {selected ? (
             <div>
-              <div className="mb-3 flex justify-end print:hidden">
+              <div className="mb-3 flex justify-end gap-2 print:hidden">
+                <button
+                  type="button"
+                  onClick={handleTakeQuiz}
+                  disabled={quizLoading}
+                  className="flex cursor-pointer items-center gap-2 rounded-full bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {quizLoading ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <FaCircleQuestion />
+                  )}
+                  {quizLoading ? "Preparing quiz..." : "Take Quiz"}
+                </button>
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
@@ -170,6 +211,12 @@ function History() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {quiz && (
+          <QuizModal topic={selected?.topic} quiz={quiz} onClose={() => setQuiz(null)} />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {deleteTarget && (
