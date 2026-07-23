@@ -3,10 +3,12 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { serverURL } from "../main";
 import { setUserData } from "../redux/userSlice";
-import { FaFileLines, FaDownload } from "react-icons/fa6";
+import { FaFileLines, FaDownload, FaCircleQuestion } from "react-icons/fa6";
+import { AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import TopicNotes from "../components/TopicNotes";
 import NotesView from "../components/NotesView";
+import QuizModal from "../components/QuizModal";
 
 function Notes() {
   const [notes, setNotes] = useState(null);
@@ -46,6 +48,28 @@ function Notes() {
     document.title = notes?.topic || "cognito-notes";
     window.print();
     document.title = prevTitle;
+  };
+
+  const [quiz, setQuiz] = useState(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+
+  const handleTakeQuiz = async () => {
+    setQuizLoading(true);
+    try {
+      const result = await axios.post(
+        `${serverURL}/api/notes/${notes._id}/quiz`,
+        {},
+        { withCredentials: true },
+      );
+      setQuiz(result.data.data.quiz);
+      if (!result.data.data.cached) {
+        dispatch(setUserData({ ...userData, credits: result.data.data.credits }));
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not generate quiz, try again.");
+    } finally {
+      setQuizLoading(false);
+    }
   };
 
   const generateNotes = async (form) => {
@@ -119,7 +143,20 @@ function Notes() {
           <div className="min-w-0 flex-1">
           {notes ? (
             <div>
-              <div className="mb-3 flex justify-end print:hidden">
+              <div className="mb-3 flex justify-end gap-2 print:hidden">
+                <button
+                  type="button"
+                  onClick={handleTakeQuiz}
+                  disabled={quizLoading}
+                  className="flex cursor-pointer items-center gap-2 rounded-full bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {quizLoading ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <FaCircleQuestion />
+                  )}
+                  {quizLoading ? "Preparing quiz..." : "Take Quiz"}
+                </button>
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
@@ -145,6 +182,12 @@ function Notes() {
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {quiz && (
+          <QuizModal topic={notes?.topic} quiz={quiz} onClose={() => setQuiz(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
