@@ -21,8 +21,9 @@ Cognito Notes is an AI study partner for students. Sign in with Google, get **50
 - ⚡ **Quick-revision sheet** and **practice questions** (short + long)
 - 🧭 **Flow diagrams** — AI-written Mermaid, rendered as real SVG flowcharts
 - 📊 **Charts** — AI-chosen bar / line / pie data rendered with Recharts
+- 🧠 **Quiz Mode** — 10 AI-generated MCQs grounded in each note, with instant right/wrong feedback, explanations and a final score; retakes are free (quiz is cached per note)
 - 📄 **One-click PDF download** with the exact page layout (works on mobile)
-- 💳 **Credit system with Stripe** — 1 credit per generation, buy more on the pricing page
+- 💳 **Credit system with Stripe** — 5 credits per note, 1 credit per quiz, buy more on the pricing page
 - ✉️ **Welcome email on first sign-up** — queued through Redis + BullMQ
 - 🗂 **History** — every note saved, browsable, re-downloadable, deletable
 
@@ -94,6 +95,7 @@ stripe listen --forward-to localhost:3000/api/payment/webhook
 | `NODE_ENV` | `development` / `production` (controls cookie flags) |
 | `FRONTEND_URL` / `CLIENT_URL` | Frontend origin — CORS + Stripe redirects + email links |
 | `GEMINI_API_KEY` | Google AI Studio key |
+| `GEMINI_MODEL` | Optional model override (default `gemini-3-flash-preview`; e.g. `gemini-3.1-flash-lite` to use a separate free-tier quota bucket) |
 | `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Stripe test keys |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SENDER_EMAIL` | Welcome-email SMTP |
 | `REDIS_URL` | Optional locally (defaults to `redis://localhost:6379`); Render Key Value URL in prod |
@@ -105,9 +107,10 @@ stripe listen --forward-to localhost:3000/api/payment/webhook
 | `POST /api/auth/google` | — | Sign in / first-time sign-up (queues welcome email) |
 | `POST /api/auth/logout` | — | Clear session cookie |
 | `GET /api/user/me` | 🔒 | Current user + credits |
-| `POST /api/notes/generate` | 🔒 | Generate notes (1 credit) |
+| `POST /api/notes/generate` | 🔒 | Generate notes (5 credits) |
 | `GET /api/notes/my-notes` | 🔒 | All of the user's notes, newest first |
 | `DELETE /api/notes/:id` | 🔒 | Delete own note |
+| `POST /api/notes/:id/quiz` | 🔒 | Generate a 10-question MCQ quiz for a note (1 credit, cached — retakes free) |
 | `POST /api/payment/checkout` | 🔒 | Create Stripe Checkout session (credit cap enforced) |
 | `POST /api/payment/webhook` | Stripe signature | Grant credits on `checkout.session.completed` |
 | `GET /api/health` | — | Uptime / wake-up check |
@@ -123,6 +126,8 @@ stripe listen --forward-to localhost:3000/api/payment/webhook
 
 ## Roadmap
 
+- [x] Quiz Mode — MCQ practice tests generated from notes
+- [ ] Flashcards generated from notes (with Anki export)
 - [ ] Verify Firebase ID tokens server-side (`firebase-admin`) instead of trusting the client
 - [ ] Move note generation itself onto the BullMQ queue with real progress
 - [ ] Per-user rate limiting
