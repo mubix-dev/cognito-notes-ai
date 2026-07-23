@@ -15,8 +15,8 @@ const STEPS = [
   },
   {
     Icon: FaDownload,
-    title: "Get notes, charts & PDFs",
-    desc: "AI generates exam-ready notes you can download and share.",
+    title: "Get notes, quizzes & PDFs",
+    desc: "AI generates exam-ready notes with MCQ quizzes you can download and share.",
   },
 ];
 

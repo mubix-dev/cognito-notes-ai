@@ -4,7 +4,7 @@ import {
   FaGraduationCap,
   FaClipboardList,
   FaChartPie,
-  FaChartLine,
+  FaCircleQuestion,
   FaFilePdf,
   FaWandMagicSparkles,
 } from "react-icons/fa6";
@@ -23,7 +23,7 @@ const FEATURES = [
   { label: "Exam Notes", Icon: FaGraduationCap },
   { label: "Project Notes", Icon: FaClipboardList },
   { label: "Charts", Icon: FaChartPie },
-  { label: "Graphs", Icon: FaChartLine },
+  { label: "MCQ Quizzes", Icon: FaCircleQuestion },
   { label: "PDFs", Icon: FaFilePdf },
   { label: "And More", Icon: FaWandMagicSparkles },
 ];
@@ -110,7 +110,8 @@ function Auth() {
             <span className="font-semibold text-violet-600">
               50 free credits
             </span>{" "}
-            to create exam notes, project notes, charts, graphs, PDFs and more.
+            to create exam notes, project notes, charts, MCQ quizzes, PDFs and
+            more.
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 12 }}

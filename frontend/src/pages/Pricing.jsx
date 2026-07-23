@@ -19,7 +19,7 @@ const PLANS = [
       "60 credits",
       "Exam & project notes",
       "Diagrams and charts",
-      "PDF download",
+      "PDF download & MCQ quizzes",
     ],
     button: "Buy Starter",
     popular: false,

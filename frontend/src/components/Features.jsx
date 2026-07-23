@@ -41,8 +41,8 @@ const FEATURES = [
   },
   {
     Icon: FaWandMagicSparkles,
-    title: "Revision Content",
-    desc: "Quick summaries and revision-ready content to study steadily till exam day.",
+    title: "Revision & Quizzes",
+    desc: "Quick revision sheets plus 10-question MCQ quizzes with explanations to test yourself before exam day.",
     color: "bg-emerald-100 text-emerald-600",
   },
 ];
