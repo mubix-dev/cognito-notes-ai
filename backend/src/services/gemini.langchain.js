@@ -5,7 +5,7 @@ let model;
 const getModel = () => {
   if (!model) {
     model = new ChatGoogleGenerativeAI({
-      model: "gemini-3-flash-preview",
+      model: process.env.GEMINI_MODEL || "gemini-3-flash-preview",
       apiKey: process.env.GEMINI_API_KEY,
       json: true,
       maxOutputTokens: 16384,
