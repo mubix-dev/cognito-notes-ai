@@ -38,6 +38,10 @@ const notesSchema = new Schema(
       type: Schema.Types.Mixed,
       required: true,
     },
+    quiz: {
+      type: Schema.Types.Mixed,
+      default: null,
+    },
   },
   { timestamps: true },
 );
