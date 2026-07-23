@@ -33,7 +33,7 @@ function Navbar({isMyNotes = false}) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.5 }}
-      className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] mt-4 sm:mt-6 flex items-center justify-between rounded-xl sm:rounded-xl bg-violet-100/50 px-4 sm:px-6 md:px-8 py-2.5 shadow"
+      className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] mt-4 sm:mt-6 flex items-center justify-between rounded-xl sm:rounded-xl bg-violet-100/50 px-4 sm:px-6 md:px-8 py-2.5 shadow print:hidden"
     >
       <img onClick={()=>navigate("/")} src={logo} alt="Cognito Notes" className="h-8 sm:h-10 w-auto  cursor-pointer" />
 

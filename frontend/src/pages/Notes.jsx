@@ -1,7 +1,6 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { useReactToPrint } from "react-to-print";
 import { serverURL } from "../main";
 import { setUserData } from "../redux/userSlice";
 import { FaFileLines, FaDownload } from "react-icons/fa6";
@@ -42,11 +41,12 @@ function Notes() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const printRef = useRef(null);
-  const handleDownloadPdf = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: notes?.topic || "cognito-notes",
-  });
+  const handleDownloadPdf = () => {
+    const prevTitle = document.title;
+    document.title = notes?.topic || "cognito-notes";
+    window.print();
+    document.title = prevTitle;
+  };
 
   const generateNotes = async (form) => {
     setError("");
@@ -77,9 +77,11 @@ function Notes() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <div className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] px-4 pb-16">
-        <TopicNotes onGenerate={generateNotes} loading={loading} error={error} />
+        <div className="print:hidden">
+          <TopicNotes onGenerate={generateNotes} loading={loading} error={error} />
+        </div>
         {loading && (
-          <div className="mx-auto mt-6 w-full max-w-2xl">
+          <div className="mx-auto mt-6 w-full max-w-2xl print:hidden">
             <div className="h-2 overflow-hidden rounded-full bg-slate-200">
               <div
                 className="h-full rounded-full bg-violet-600 transition-all duration-300"
@@ -94,7 +96,7 @@ function Notes() {
 
         <div className="mt-8 flex w-full items-start gap-6">
           {notes && (
-            <aside className="sticky top-6 hidden w-48 shrink-0 rounded-2xl border border-slate-200 bg-white p-3 md:block">
+            <aside className="sticky top-6 hidden w-48 shrink-0 rounded-2xl border border-slate-200 bg-white p-3 md:block print:hidden">
               <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
                 On this page
               </p>
@@ -117,7 +119,7 @@ function Notes() {
           <div className="min-w-0 flex-1">
           {notes ? (
             <div>
-              <div className="mb-3 flex justify-end">
+              <div className="mb-3 flex justify-end print:hidden">
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
@@ -127,9 +129,7 @@ function Notes() {
                   Download PDF
                 </button>
               </div>
-              <div ref={printRef}>
-                <NotesView note={notes} />
-              </div>
+              <NotesView note={notes} />
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-slate-300 px-6 py-12 text-center">

@@ -38,7 +38,7 @@ function TopicNotes({ onGenerate, loading, error }) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mx-auto mt-10 sm:mt-14 max-w-full rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm"
+      className="mx-auto mt-10 sm:mt-14 max-w-full rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm print:hidden"
     >
       <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
         Generate Topic Notes

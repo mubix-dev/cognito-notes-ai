@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { useReactToPrint } from "react-to-print";
 import { serverURL } from "../main";
 import {
   FaFileLines,
@@ -21,11 +20,12 @@ function History() {
   const [loading, setLoading] = useState(true);
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const printRef = useRef(null);
-  const handleDownloadPdf = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: selected?.topic || "cognito-notes",
-  });
+  const handleDownloadPdf = () => {
+    const prevTitle = document.title;
+    document.title = selected?.topic || "cognito-notes";
+    window.print();
+    document.title = prevTitle;
+  };
 
   const [deleteTarget, setDeleteTarget] = useState(null);
 
@@ -66,14 +66,14 @@ function History() {
         <button
           type="button"
           onClick={() => setShowSidebar(!showSidebar)}
-          className="flex w-fit cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm md:hidden"
+          className="flex w-fit cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm md:hidden print:hidden"
         >
           {showSidebar ? <FaXmark /> : <FaBars />}
           My Notes ({notes.length})
         </button>
 
         <div
-          className={`grid shrink-0 transition-[grid-template-rows] duration-300 ease-in-out md:sticky md:top-6 md:block md:w-64 ${
+          className={`grid shrink-0 transition-[grid-template-rows] duration-300 ease-in-out md:sticky md:top-6 md:block md:w-64 print:hidden ${
             showSidebar ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
           }`}
         >
@@ -148,7 +148,7 @@ function History() {
         <div className="min-w-0 flex-1">
           {selected ? (
             <div>
-              <div className="mb-3 flex justify-end">
+              <div className="mb-3 flex justify-end print:hidden">
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
@@ -158,9 +158,7 @@ function History() {
                   Download PDF
                 </button>
               </div>
-              <div ref={printRef}>
-                <NotesView note={selected} />
-              </div>
+              <NotesView note={selected} />
             </div>
           ) : (
             <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-slate-300 px-6 text-center">
