@@ -123,7 +123,7 @@ const generateQuiz = asyncHandler(async (req, res) => {
   note.markModified("quiz");
   await note.save();
 
-  user.credits -= 1;
+  user.credits -= 3;
   user.isCreditAvailable = user.credits > 0;
   await user.save();
 
