@@ -8,7 +8,7 @@ import { setUserData } from "../redux/userSlice";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 
-function Navbar({isMyNotes = false}) {
+function Navbar({isMyNotes = false,isPaymentPage=false}) {
   const [showBuyCredits, setShowBuyCredits] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const { userData } = useSelector((state) => state.user);
@@ -68,7 +68,7 @@ function Navbar({isMyNotes = false}) {
           </motion.div>
 
           <AnimatePresence>
-          {showBuyCredits && (
+          {showBuyCredits && !isPaymentPage && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}

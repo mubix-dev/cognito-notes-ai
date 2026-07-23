@@ -92,7 +92,7 @@ function Pricing() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      <Navbar isPaymentPage={true}/>
 
       <div className="mx-3 sm:mx-6 md:mx-auto md:max-w-[85%] xl:max-w-[80%] mt-12 sm:mt-16 px-4 pb-20">
         <motion.div
