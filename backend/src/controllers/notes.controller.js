@@ -4,7 +4,9 @@ import ApiResponse from "../utils/api-response.js";
 import User from "../models/user.model.js";
 import Notes from "../models/notes.model.js";
 import { buildPrompt } from "../utils/promptBuilder.js";
-import { generateGeminiResponse } from "../services/gemini.services.js";
+// import { generateGeminiResponse } from "../services/gemini.services.js";
+import { generateGeminiResponse } from "../services/gemini.langchain.js";
+
 
 const generateNotes = asyncHandler(async (req, res) => {
   const {
